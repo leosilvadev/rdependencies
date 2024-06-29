@@ -29,8 +29,7 @@ export class Sql1719258447605 implements MigrationInterface {
             "created_at",
             "description"
         ) VALUES ${values.slice(0, -1)}
-    `;
-    console.log(sql);
+        `;
 
         await queryRunner.query(sql);
     }

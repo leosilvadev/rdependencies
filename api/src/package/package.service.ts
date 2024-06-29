@@ -16,16 +16,11 @@ export class PackageService {
 
   }
 
-  create(createPackageDto: CreatePackageDto) {
-    return 'This action adds a new package';
+  create(dto: CreatePackageDto) {
+    this.repository.save(Object.assign(new Package(), {...dto, createdAt: new Date()}));
   }
 
   async findAll(packageName?: string): Promise<PackageDto[]> {
-    console.log(packageName)
-    const whereClause: FindOptionsWhere<Package> = packageName ? {
-      name: Like(`%${packageName}%`)
-    } : {};
-
     let builder = this.repository.createQueryBuilder("package");
 
     if (packageName) {
@@ -38,14 +33,14 @@ export class PackageService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} package`;
+    return this.repository.findOneBy({ id });
   }
 
   update(id: number, updatePackageDto: UpdatePackageDto) {
-    return `This action updates a #${id} package`;
+    return this.repository.save(Object.assign(new Package(), {...updatePackageDto, id}));
   }
 
   remove(id: number) {
-    return `This action removes a #${id} package`;
+    return this.repository.delete(id);
   }
 }

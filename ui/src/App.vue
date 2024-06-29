@@ -5,12 +5,11 @@
         <div>
           Help R-Project // onGRID Challenge
         </div>
-        <button data-mdb-button-init class="navbar-toggler" type="button" data-mdb-collapse-init data-mdb-target="#sidebarMenu"
-          aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
         <form id="packages-search-form" class="d-none d-md-flex input-group w-auto my-auto">
-          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' @input="event => this.$router.replace({ name: 'packages', query: {packageName: event.target.value} })"/>
+          <input autocomplete="off" type="search" 
+            class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' 
+            @input="event => this.$router.replace({ name: 'packages', query: {packageName: event.target.value} })"
+            :value="this.$router.currentRoute.value.query.packageName" />
         </form>
       </div>
     </nav>
@@ -25,10 +24,6 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#packages-search-form > button {
-
 }
 
 nav.fixed-top {
