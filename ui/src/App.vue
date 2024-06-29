@@ -10,7 +10,7 @@
           <i class="fas fa-bars"></i>
         </button>
         <form id="packages-search-form" class="d-none d-md-flex input-group w-auto my-auto">
-          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' />
+          <input autocomplete="off" type="search" class="form-control rounded" placeholder='Search (ctrl + "/" to focus)' @input="event => this.$router.replace({ name: 'packages', query: {packageName: event.target.value} })"/>
         </form>
       </div>
     </nav>
@@ -48,3 +48,4 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { PackageService } from './package.service';
 import { CreatePackageDto } from './dto/create-package.dto';
 import { UpdatePackageDto } from './dto/update-package.dto';
@@ -13,8 +13,8 @@ export class PackageController {
   }
 
   @Get()
-  findAll() {
-    return this.packageService.findAll();
+  findAll(@Query('packageName') packageName: string) {
+    return this.packageService.findAll(packageName);
   }
 
   @Get(':id')

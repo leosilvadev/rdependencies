@@ -57,7 +57,7 @@
   </div>
 </template>
   
-  <script lang="ts">
+<script lang="ts">
   import { defineComponent } from 'vue';
   import axios from 'axios';
 
@@ -78,10 +78,18 @@
     created() {
       this.fetchPackages();
     },
+    watch:{
+      $route (to, from){
+        if (from.query.packageName !== to.query.packageName) {
+          this.fetchPackages();
+        }
+      }
+    } ,
     methods: {
       async fetchPackages() {
         try {
-          const response = await axios.get('http://localhost:3000/package');
+          const packageName = this.$router.currentRoute.value.query.packageName;
+          const response = await axios.get(`http://localhost:3000/package${packageName ? '?packageName=' + packageName : ''}`);
           this.packages = response.data;
         } catch (error) {
           console.error('Error fetching packages:', error);
