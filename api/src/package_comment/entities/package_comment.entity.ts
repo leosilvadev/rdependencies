@@ -11,6 +11,9 @@ export class PackageComment {
     @Column()
     text: string;
 
+    @Column({name: 'created_at'})
+    createdAt: Date;
+
     @ManyToOne(() => Package, (pkg) => pkg.comments)
     @JoinColumn({ name: 'package_id' })
     package: Package;

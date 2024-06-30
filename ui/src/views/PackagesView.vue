@@ -50,6 +50,26 @@
           <hr />
           <div>
             <h3>Add Comment</h3>
+            <div class="card bg-light mb-3 package-comment" v-for="comment in selectedPackage.comments" :key="comment.id">
+              <div class="card-header">Commented at {{comment.createdAt}}</div>
+              <div class="card-body">
+                <p class="card-text">{{ comment.text }}</p>
+              </div>
+            </div>
+
+            <div class="card text-white bg-primary mb-3 add-package-comment">
+              <div class="card-header">Add a new comment to the package</div>
+              <div class="card-body">
+                  <div class="row">
+                    <div class="form-group col-md-9">
+                      <textarea class="form-control" v-model="commentToAdd"></textarea>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-light" @click="addComment()" :disabled="!commentToAdd">Add</button>
+                    </div>
+                  </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
@@ -59,20 +79,18 @@
   
 <script lang="ts">
   import { defineComponent } from 'vue';
-  import axios from 'axios';
+  import ApiService from '../services/apiService';
+  import { Package } from '../domains/package';
 
-  type Package = {
-    id: number;
-    name: string;
-    headline: string;
-  }
+  const apiService = new ApiService();
   
   export default defineComponent({
     name: 'PackagesView',
     data() {
       return {
         packages: [] as Array<Package>,
-        selectedPackage: {} as Package
+        selectedPackage: {} as Package,
+        commentToAdd: '' as string
       };
     },
     created() {
@@ -89,15 +107,33 @@
       async fetchPackages() {
         try {
           const packageName = this.$router.currentRoute.value.query.packageName;
-          const response = await axios.get(`http://localhost:3000/package${packageName ? '?packageName=' + packageName : ''}`);
-          this.packages = response.data;
+          this.packages = await apiService.getPackages(packageName?.toString());
+
         } catch (error) {
           console.error('Error fetching packages:', error);
+
         }
       },
       async selectPackage(pkg: Package) {
-        this.selectedPackage = pkg;
+        try {
+          this.selectedPackage = await apiService.getPackage(pkg.id);
+
+        } catch (error) {
+          console.error(`Error fetching package with id ${pkg.id}:`, error);
+
+        }
       },
+      async addComment() {
+        try {
+          await apiService.addComment(this.selectedPackage.id, this.commentToAdd);
+          this.commentToAdd = '';
+          this.selectedPackage = await apiService.getPackage(this.selectedPackage.id);
+
+        } catch (error) {
+          console.error(`Error adding a comment`, error);
+
+        }
+      }
     },
   });
   </script>
@@ -180,5 +216,27 @@ div.package-headline {
 .package-details .package-description {
   text-align: left;
   font-size: 1em;
+}
+
+.package-comment {
+  text-align: left;
+}
+
+.package-comment .card-header {
+  font-weight: bold;
+}
+
+.add-package-comment {
+  text-align: left;
+}
+
+.add-package-comment .card-header {
+  font-size: 1.4em;
+  font-weight: bold;
+}
+
+.add-package-comment button {
+  width: 100%;
+  height: 100%;
 }
 </style>

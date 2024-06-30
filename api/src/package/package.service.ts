@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Package } from './entities/package.entity';
 import { FindOptionsWhere, Like, Repository } from 'typeorm';
 import { PackageDto } from './dto/package.dto';
+import { InvalidPackageError } from './errors/invalid-package-error';
 
 @Injectable()
 export class PackageService {
@@ -35,6 +36,10 @@ export class PackageService {
 
   async findOne(id: number) {
     const pkg = await this.repository.findOneBy({ id });
+    if (!pkg) {
+      return Promise.reject(new InvalidPackageError());
+    }
+
     const comments = await pkg.comments;
     return new PackageDto(pkg, comments);
   }

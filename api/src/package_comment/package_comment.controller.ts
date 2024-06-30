@@ -3,28 +3,18 @@ import { PackageCommentService } from './package_comment.service';
 import { CreatePackageCommentDto } from './dto/create-package_comment.dto';
 import { UpdatePackageCommentDto } from './dto/update-package_comment.dto';
 
-@Controller('package-comment')
+@Controller('packages/:packageId/comments')
 export class PackageCommentController {
   constructor(private readonly packageCommentService: PackageCommentService) {}
 
   @Post()
-  create(@Body() createPackageCommentDto: CreatePackageCommentDto) {
-    return this.packageCommentService.create(createPackageCommentDto);
-  }
-
-  @Get()
-  findAll() {
-    return this.packageCommentService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.packageCommentService.findOne(+id);
+  create(@Param('packageId') packageId: string, @Body() dto: CreatePackageCommentDto) {
+    return this.packageCommentService.create(+packageId, dto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePackageCommentDto: UpdatePackageCommentDto) {
-    return this.packageCommentService.update(+id, updatePackageCommentDto);
+  update(@Param('id') id: string, @Body() dto: UpdatePackageCommentDto) {
+    return this.packageCommentService.update(+id, dto);
   }
 
   @Delete(':id')
