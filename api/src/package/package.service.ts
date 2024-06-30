@@ -16,7 +16,7 @@ export class PackageService {
 
   }
 
-  create(dto: CreatePackageDto) {
+  async create(dto: CreatePackageDto) {
     this.repository.save(Object.assign(new Package(), {...dto, createdAt: new Date()}));
   }
 
@@ -24,6 +24,7 @@ export class PackageService {
     let builder = this.repository.createQueryBuilder("package");
 
     if (packageName) {
+      //TODO: migrate to repository layer
       builder = builder.where("UPPER(package.name) LIKE UPPER(:name)", { name: `%${packageName}%` });
     }
     
@@ -32,15 +33,17 @@ export class PackageService {
       .then(entities => entities.map(entity => new PackageDto(entity)));
   }
 
-  findOne(id: number) {
-    return this.repository.findOneBy({ id });
+  async findOne(id: number) {
+    const pkg = await this.repository.findOneBy({ id });
+    const comments = await pkg.comments;
+    return new PackageDto(pkg, comments);
   }
 
-  update(id: number, updatePackageDto: UpdatePackageDto) {
+  async update(id: number, updatePackageDto: UpdatePackageDto) {
     return this.repository.save(Object.assign(new Package(), {...updatePackageDto, id}));
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return this.repository.delete(id);
   }
 }

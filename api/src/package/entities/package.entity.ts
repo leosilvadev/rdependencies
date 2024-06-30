@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { PackageComment } from 'src/package_comment/entities/package_comment.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity({name: 'packages'})
 export class Package {
@@ -32,5 +33,11 @@ export class Package {
 
     @Column({ type: 'text' })
     description: string;
+    
+    @OneToMany(() => PackageComment, (comment) => comment.package, {
+        onDelete: 'CASCADE',
+        lazy: true
+    })
+    comments: Promise<PackageComment[]>;
 
 }
