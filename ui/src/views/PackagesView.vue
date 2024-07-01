@@ -25,7 +25,7 @@
                     <span>License:</span> {{ selectedPackage.license }}
                   </div>
                   <div class="package-date">
-                    <span>Date:</span> {{ selectedPackage.createdAt }}
+                    <span>Date:</span> {{ parseDate(selectedPackage.createdAt) }}
                   </div>
                 </div>
                 <div class="col-md-8 package-version">{{ selectedPackage.version }}</div>
@@ -51,7 +51,7 @@
           <div>
             <h3>Add Comment</h3>
             <div class="card bg-light mb-3 package-comment" v-for="comment in selectedPackage.comments" :key="comment.id">
-              <div class="card-header">Commented at {{comment.createdAt}}</div>
+              <div class="card-header">Commented at {{ parseDateTime(comment.createdAt) }}</div>
               <div class="card-body">
                 <p class="card-text">{{ comment.text }}</p>
               </div>
@@ -81,9 +81,10 @@
   import { defineComponent } from 'vue';
   import ApiService from '../services/apiService';
   import { Package } from '../domains/package';
+  import moment from 'moment';
 
   const apiService = new ApiService();
-  
+
   export default defineComponent({
     name: 'PackagesView',
     data() {
@@ -104,6 +105,14 @@
       }
     } ,
     methods: {
+      parseDate(date: Date) {
+        return moment(date).format('YYYY/MM/DD');
+      },
+
+      parseDateTime(date: Date) {
+        return moment(date).format('YYYY/MM/DD HH:mm:ss');
+      },
+
       async fetchPackages() {
         try {
           const packageName = this.$router.currentRoute.value.query.packageName;
